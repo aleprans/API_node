@@ -1,6 +1,5 @@
 async function connect(){
 if(global.connection && global.connection.state !== 'disconnected') return global.connection
-
   const mysql = require('mysql2/promise')
   const connection =await mysql.createConnection("mysql://manutencao:Navigu_03@awseb-e-3px43ti4i9-stack-awsebrdsdatabase-o542scrhyptb.cuuomrcedmbe.sa-east-1.rds.amazonaws.com:3306/api")
   global.connection = connection
