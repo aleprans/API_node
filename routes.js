@@ -1,17 +1,23 @@
 const express = require('express')
 const routes = express.Router()
-const db = require('./db')
+// const db = require('./db')
 
-routes.get('/:id', async (req, res) => {
-  const user = await db.selectUser(req.params.id)
-  return res.json(user)
-})
+const db = {
+  id: 1,
+  name:"alexandre",
+  idade: 45
+}
+
+// routes.get('/:id', async (req, res) => {
+//   const user = await db.selectUser(req.params.id)
+//   return res.json(user)
+// })
 
 routes.get('/', async (req, res) => {
-  const user = await db.selectAll()
-  return res.json(user)
+  // const user = await db.selectAll()
+  return res.json(db)
 })
-
+/*
 routes.post('/add', async (req, res) => {
   const body = req.body
   const result = await db.insertUser(body)
@@ -30,5 +36,5 @@ routes.delete('/:id', async (req, res) => {
   return res.json(user)
 })
 
-
+*/
 module.exports = routes
