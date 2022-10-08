@@ -1,12 +1,6 @@
 const express = require('express')
 const routes = express.Router()
-// const db = require('./db')
-
-const db = {
-  id: 1,
-  name:"alexandre",
-  idade: 45
-}
+const db = require('./db')
 
 // routes.get('/:id', async (req, res) => {
 //   const user = await db.selectUser(req.params.id)
@@ -14,8 +8,8 @@ const db = {
 // })
 
 routes.get('/', async (req, res) => {
-  // const user = await db.selectAll()
-  return res.json(db)
+  const user = await db.selectAll()
+  return res.json(user)
 })
 /*
 routes.post('/add', async (req, res) => {
