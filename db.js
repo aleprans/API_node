@@ -6,47 +6,52 @@ if(global.connection && global.connection.state !== 'disconnected') return globa
   return connection
 }
 
-const teste = [
-  {
-    embarcacao: 'P23',
-    equipamento: 'teste',
-    descricao: 'teste',
-    horimetro: 1234,
-    data: '20/12/22'
-  }
+const tabelas = [
+  ['servicos','embarcacao', 'equipamento', 'descricao', 'horimetro', 'data'],
+  ['hrextras', 'hrinicial', 'hrfinal', 'hrtotal', 'data', 'recebido']
 ]
 
-async function selectAll(){
+async function selectAll(tab){
   const conn = await connect()
-  const [rows] = await conn.query("Select * from servicos")
+  const sql = "Select * from " +tabelas[tab][0]
+  const [rows] = await conn.query(sql)
   return rows
 }
 
-async function selectServico(id){
+async function select(tab, id){
+
   const conn = await connect()
-  const sql = "Select * from servicos where id = ?"
-  const [rows] = await conn.query(sql, id)
+  const sql = "Select * from " +tabelas[tab]+ " where id = ?"
+  const values = [id]
+  const [rows] = await conn.query(sql, values)
   return rows
 }
 
-async function insertServico(serv){
+async function insert(tab, dados){
   const conn = await connect()
-  const sql = "INSERT INTO servicos (embarcacao, equipamento, descricao, horimetro, data) VALUES (?, ?, ?, ? ,?)"
-  const values = [serv.embarcacao, serv.equipamento, serv.descricao, serv.horimetro, serv.data]
+  const campos = tabelas[tab].slice(1).join()
+  const sql = "INSERT INTO " +tabelas[tab][0]+ " ("+campos+ ") VALUES ("+dados+")"
+  return await conn.query(sql)
+}
+
+async function update(tab, id, dados){
+  const conn = await connect()
+  const campos = tabelas[tab].slice(1)
+  let param = []
+  for(let i = 0; i < campos.length ; i++){
+    param[i] = campos[i] + ' = '+dados[i]
+  }
+  const params = param.join()
+  const sql = "UPDATE " +tabelas[tab][0]+" SET "+params+" WHERE ID = ?"
+  const values = [id]
   return await conn.query(sql, values)
 }
 
-async function updateServico(id , dados){
+async function deleted(tab, id){
   const conn = await connect()
-  const sql = "UPDATE servicos SET embarcacao = ?, equipamento = ?, descricao = ?, horimetro = ?, data = ? WHERE id = ?"
-  const values = [dados.embarcacao, dados.equipamento, dados.descricao, dados.horimetro, dados.data, id]
+  const sql = "DELETE FROM " +tabelas[tab][0]+ " WHERE id = ?"
+  const values = [id]
   return await conn.query(sql, values)
 }
 
-async function deleteServico(id){
-  const conn = await connect()
-  const sql = "DELETE FROM servicos WHERE id = ?"
-  return await conn.query(sql, id)
-}
-
-module.exports = {selectAll, selectServico, insertServico, updateServico, deleteServico}
+module.exports = {selectAll, select, insert, update, deleted}
